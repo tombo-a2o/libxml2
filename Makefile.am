@@ -2,20 +2,20 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = include . doc example xstc $(PYTHON_SUBDIR)
+SUBDIRS = include .
 
-DIST_SUBDIRS = include . doc example python xstc
+DIST_SUBDIRS = include .
 
 AM_CPPFLAGS = -I$(top_builddir)/include -I$(srcdir)/include
 
 AM_CFLAGS = $(THREAD_CFLAGS) $(Z_CFLAGS) $(LZMA_CFLAGS)
 
-noinst_PROGRAMS=testSchemas testRelax testSAX testHTML testXPath testURI \
-                testThreads testC14N testAutomata testRegexp \
-                testReader testapi testModule runtest runsuite testchar \
-		testdict runxmlconf testrecurse testlimits
+#noinst_PROGRAMS=testSchemas testRelax testSAX testHTML testXPath testURI \
+#                testThreads testC14N testAutomata testRegexp \
+#                testReader testapi testModule runtest runsuite testchar \
+#		testdict runxmlconf testrecurse testlimits
 
-bin_PROGRAMS = xmllint xmlcatalog
+#bin_PROGRAMS = xmllint xmlcatalog
 
 bin_SCRIPTS=xml2-config
 
@@ -209,7 +209,7 @@ runtests:
 	@(if [ "$(PYTHON_SUBDIR)" != "" ] ; then cd python ; \
 	    $(MAKE) tests ; fi)
 
-check: all runtests
+check:
 
 check-valgrind valgrind: all
 	@echo '## Running the regression tests under Valgrind'
