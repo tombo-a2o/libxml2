@@ -4523,6 +4523,9 @@ xmlXPathIntersection (xmlNodeSetPtr nodes1, xmlNodeSetPtr nodes2) {
     return(ret);
 }
 
+void xmlFree_(void *ptr, xmlChar *unused) {
+	xmlFree(ptr);
+}
 /**
  * xmlXPathDistinctSorted:
  * @nodes:  a node-set, sorted by document order
@@ -4560,7 +4563,7 @@ xmlXPathDistinctSorted (xmlNodeSetPtr nodes) {
 	    xmlFree(strval);
 	}
     }
-    xmlHashFree(hash, (xmlHashDeallocator) xmlFree);
+    xmlHashFree(hash,  xmlFree_);
     return(ret);
 }
 
@@ -4978,6 +4981,10 @@ xmlXPathRegisteredFuncsCleanup(xmlXPathContextPtr ctxt) {
  *									*
  ************************************************************************/
 
+void xmlXPathFreeObject_(void* obj, xmlChar *unused) {
+    xmlXPathFreeObject(obj);
+}
+
 /**
  * xmlXPathRegisterVariable:
  * @ctxt:  the XPath context
@@ -5022,10 +5029,10 @@ xmlXPathRegisterVariableNS(xmlXPathContextPtr ctxt, const xmlChar *name,
 	return(-1);
     if (value == NULL)
         return(xmlHashRemoveEntry2(ctxt->varHash, name, ns_uri,
-	                           (xmlHashDeallocator)xmlXPathFreeObject));
+	                           xmlXPathFreeObject_));
     return(xmlHashUpdateEntry2(ctxt->varHash, name, ns_uri,
 			       (void *) value,
-			       (xmlHashDeallocator)xmlXPathFreeObject));
+			       xmlXPathFreeObject_));
 }
 
 /**
@@ -5115,7 +5122,7 @@ xmlXPathRegisteredVariablesCleanup(xmlXPathContextPtr ctxt) {
     if (ctxt == NULL)
 	return;
 
-    xmlHashFree(ctxt->varHash, (xmlHashDeallocator)xmlXPathFreeObject);
+    xmlHashFree(ctxt->varHash, xmlXPathFreeObject_);
     ctxt->varHash = NULL;
 }
 
@@ -5146,9 +5153,9 @@ xmlXPathRegisterNs(xmlXPathContextPtr ctxt, const xmlChar *prefix,
 	return(-1);
     if (ns_uri == NULL)
         return(xmlHashRemoveEntry(ctxt->nsHash, prefix,
-	                          (xmlHashDeallocator)xmlFree));
+	                          xmlFree_));
     return(xmlHashUpdateEntry(ctxt->nsHash, prefix, (void *) xmlStrdup(ns_uri),
-			      (xmlHashDeallocator)xmlFree));
+			      xmlFree_));
 }
 
 /**
@@ -5197,7 +5204,7 @@ xmlXPathRegisteredNsCleanup(xmlXPathContextPtr ctxt) {
     if (ctxt == NULL)
 	return;
 
-    xmlHashFree(ctxt->nsHash, (xmlHashDeallocator)xmlFree);
+    xmlHashFree(ctxt->nsHash, xmlFree_);
     ctxt->nsHash = NULL;
 }
 
